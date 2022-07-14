@@ -1,9 +1,9 @@
-package string;
 import java.util.*;
-public class Demo4 {
+public class SwapAndAscii 
+{
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	public static void main(String[] args)
+	{
 
 		Scanner sc = new Scanner(System.in);
 		
