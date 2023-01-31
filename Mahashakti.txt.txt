@@ -1,0 +1,383 @@
+package cs;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.Calendar;
+import java.util.Random;
+import java.util.Scanner;
+
+public class Mahashakti {
+	
+	Scanner sc = new Scanner(System.in);
+	
+	void Register() throws SQLException
+	{	
+		Connection conn = null;
+		conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/my_work",
+				"root", "root");
+		System.out.println("Connection is Created");
+		System.out.println("Enter SI NO");
+		String si = sc.next();
+		System.out.println("Enter FirstName");
+		String fname = sc.next();
+		System.out.println("Enter LastName");
+		String lname = sc.next();
+		System.out.println("Enter your EmailId");
+		String email = sc.next();
+		System.out.println("Enter Phone No");
+		String phone = sc.next();
+		System.out.println("Enter your password");
+		String pass = sc.next();
+		
+		String qry = "insert into rcm (SI_NO, FIRST_NAME, LAST_NAME, Email_ID, PHONE_NO, Password)"+ "values (?, ?, ?, ?, ?, ?)";	
+		PreparedStatement prdstmt = conn.prepareStatement(qry);
+		prdstmt.setString(1, si);
+		prdstmt.setString(2, fname);
+		prdstmt.setString(3, lname);
+		prdstmt.setString(4, email);
+		prdstmt.setString(5, phone);
+		prdstmt.setString(6, pass);
+		
+		prdstmt.execute();
+		System.out.println("Updated check it DB");
+		
+		conn.close();
+		Option();
+		
+	}
+	
+	void Login() throws SQLException
+	{
+		Connection conn = null;
+		Statement stmt = null;
+		conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/my_work",
+				"root", "root");
+		System.out.println("Connection is Created");
+		stmt = (Statement) conn.createStatement();
+		
+		System.out.println("Enter your Phone Number");
+		String pn = sc.next();
+
+		ResultSet rsObj = stmt.executeQuery("select * from rcm");
+
+		while(rsObj.next())
+		{
+			String urname = rsObj.getString("FIRST_NAME");
+			String lrname = rsObj.getString("LAST_NAME");
+			String password = rsObj.getString("Password");
+			String phone = rsObj.getString("PHONE_NO");
+
+			if(pn.equals(phone))
+			{
+				System.out.println("Enter your Password");
+				String pass = sc.next();
+				if(pass.equals(password))
+				{
+					System.out.println("\nWel Come Back "+urname+" "+lrname);
+					break;
+				}
+				else
+				{
+					System.out.println("Password is Invalid / Not Matched");
+					pass = sc.next();
+					if(pass.equals(password))
+					{
+						System.out.println("\nWel Come Back "+urname+" "+lrname);
+						break;
+					}
+					else
+					{
+						System.out.println("Password is Invalid/Not Matched try again after some time");
+					}
+				}
+				
+			}
+			else
+			{
+				System.out.println("Phone No is Invalid / Not Matched Enter again");
+				pn = sc.next();
+				if(pn.equals(phone))
+				{
+					System.out.println("Enter your Password");
+					String pass = sc.next();
+					if(pass.equals(password))
+					{
+						System.out.println("\nWel Come Back "+urname+" "+lrname);
+						break;
+					}
+					else
+					{
+						System.out.println("Password is Invalid / Not Matched");
+						pass = sc.next();
+						if(pass.equals(password))
+						{
+							System.out.println("\nWel Come Back "+urname+" "+lrname);
+							break;
+						}
+						else
+						{
+							System.out.println("Password is Invalid/Not Matched try again after some time");
+						}
+					}
+					
+				}
+				else
+				{
+					System.out.println("Phone No is Invalid / Not Matched try again after some time");
+					break;
+					
+				}
+				break;
+				
+			}
+		}
+		
+		conn.close();
+		rsObj.close();
+		Option();
+	}
+	
+	void Delete() throws SQLException
+	{
+		Connection conn = null;
+		Statement stmt = null;
+
+		conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/my_work",
+				"root", "root");
+		System.out.println("Connection is Created");
+		stmt = (Statement) conn.createStatement();
+		ResultSet rsObj = stmt.executeQuery("select * from rcm");
+		
+	
+		
+		System.out.println("Enter Phone no");
+		String phone = sc.next();
+		while(rsObj.next())
+		{
+			String phone_no = rsObj.getString("PHONE_NO");
+			String password = rsObj.getString("Password");
+			
+			if(phone.equals(phone_no))
+			{
+				System.out.println("Enter Password");
+				String pass = sc.next();
+				
+				if(pass.equals(password))
+				{
+					String qry = "delete from rcm where PHONE_NO = ? ";
+					PreparedStatement prdstmt = conn.prepareStatement(qry);
+			
+					prdstmt.setString(1, phone);
+//					prdstmt.setString(1, pass);
+					prdstmt.execute();	
+				}
+				else
+				{
+					System.out.println("Password is Invalid / Not Matched Enter again");
+					pass = sc.next();
+					
+					if(pass.equals(password))
+					{
+						String qry = "delete from rcm where PHONE_NO = ? ";
+						PreparedStatement prdstmt = conn.prepareStatement(qry);
+						
+						prdstmt.setString(1, phone);
+//						prdstmt.setString(1, pass);
+						prdstmt.execute();
+					}
+					else
+					{
+						System.out.println("Password is Invalid / Not Matched try again after some time");
+					}
+				}
+			}
+			else
+			{
+				System.out.println("Phone No is Invalid / Not Matched Enter again");
+				phone = sc.next();
+				if(phone.equals(phone_no))
+				{
+					System.out.println("Enter Password");
+					String pass = sc.next();
+					
+					if(pass.equals(password))
+					{
+						String qry = "delete from rcm where PHONE_NO = ? ";
+						PreparedStatement prdstmt = conn.prepareStatement(qry);
+						
+						prdstmt.setString(1, phone);
+//						prdstmt.setString(1, pass);
+						prdstmt.execute();
+					}
+					else
+					{
+						System.out.println("Password is Invalid / Not Matched Enter again");
+						pass = sc.next();
+						
+						if(pass.equals(password))
+						{
+							String qry = "delete from rcm where PHONE_NO = ? ";
+							PreparedStatement prdstmt = conn.prepareStatement(qry);
+					
+							prdstmt.setString(1, phone);
+//							prdstmt.setString(1, pass);
+							prdstmt.execute();	
+						}
+						else
+						{
+							System.out.println("Password is Invalid / Not Matched try again after some time");
+						}
+					}
+				}
+				else
+				{
+					System.out.println("Phone No is Invalid / Not Matched try again after some time");
+						
+				}
+					
+			}
+		}
+		conn.close();
+		System.out.println("Account is Deleted \nPlease Check the table in DB");
+	
+	
+
+	}
+	
+	void Forget() throws SQLException
+	{
+		Connection conn = null;
+		Statement stmt = null;
+
+		conn = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/my_work",
+				"root", "root");
+		System.out.println("Connection is Created");
+		stmt = (Statement) conn.createStatement();
+
+		Random rdm = new Random();
+		Scanner sc = new Scanner(System.in);
+		System.out.println("Enter your Phone Number");
+		String phone = sc.next();
+
+		ResultSet rsObj = stmt.executeQuery("select * from rcm");
+
+		while(rsObj.next())
+		{
+			String urname = rsObj.getString("FIRST_NAME");
+			String lrname = rsObj.getString("LAST_NAME");
+			String phone_no = rsObj.getString("PHONE_NO");
+			String password = rsObj.getString("Password");
+
+			if(phone.equals(phone_no))
+			{
+				int otp = rdm.nextInt(99999);
+				System.out.println(otp);
+				System.out.println("Enter OTP already sent your mobile");
+				int OTP = sc.nextInt();
+				
+				if(OTP==otp)
+				{
+					System.out.println("\nWel Come Back "+urname+" "+lrname);
+					System.out.println("Your Password is :"+password);
+					break;
+					
+				}
+				else
+				{
+					System.out.println("OTP is Invalid Please enter correct password");
+					OTP = sc.nextInt();
+					
+					if(OTP==otp)
+					{
+						System.out.println("\nWel Come Back "+urname+" "+lrname);
+						System.out.println("Your Password is :"+password);
+						break;
+						
+					}
+					else
+					{
+						System.out.println("Refreshh!!! it");
+					}
+
+				}
+
+			}
+			else
+			{
+				System.out.println("Phone No is Invalid / Not Matched");
+				break;
+			}
+		}
+		
+		conn.close();
+		rsObj.close();
+		Option();
+	}
+	
+	
+	void Option() throws SQLException
+	{
+		System.out.println("\nSelect Any One Option");
+		System.out.println("New User/Register Press  :1\nLogIn Account Press      :2\nForget  password Press   :3"
+				+ "\nDelete Account Press     :4");
+		
+		Scanner sc = new Scanner(System.in);
+		int press = sc.nextInt();
+		
+		if(press==1)
+		{
+			Register();
+		}
+		else if(press==2)
+		{
+			Login();
+		}
+		else if(press==3)
+		{
+			Forget();
+		}
+		else if(press==4)
+		{
+			Delete();
+		}
+		else
+		{
+			System.out.println("Invalid Option Plz Enter correct option");
+			press = sc.nextInt();
+			if(press==1)
+			{
+				Register();
+			}
+			else if(press==2)
+			{
+				Login();
+			}
+			else if(press==3)
+			{
+				Forget();
+			}
+			else if(press==4)
+			{
+				Delete();
+			}
+			else
+			{
+				System.out.println("Invalid Option Plz try again after some time");
+			}
+		}
+
+	}
+	
+
+	public static void main(String[] args) throws SQLException {
+		
+		Mahashakti masti = new Mahashakti ();
+		
+		masti.Option();
+	}
+
+}
